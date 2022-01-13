@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:cubit/cubit.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
-import 'package:resturant_order/cubit/cubit_observer.dart';
-import 'package:resturant_order/cubit/drinks_cubit.dart';
-void main() {
+import 'package:flutter_redux/flutter_redux.dart';
 
-  Cubit.observer = MainCubitObserver();
+import 'package:resturant_order/redux/app_state.dart';
+
+
+
+import 'model/drink.dart';
+void main() {
   runApp( MyApp());
 }
 
 
 class MyApp extends StatelessWidget{
+
+
+  final Store<AppState> _store = Store<AppState>(
+    updateDrinkReducer,
+    initialState : appState(
+      drinks: [
+        Drink("Water" , false),
+        Drink("Cooka cola" , false),
+        Drink("pepsi" , false),
+        Drink("limonad" , false),
+        Drink("joice" , false),
+      ]
+    )
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +36,10 @@ class MyApp extends StatelessWidget{
         title: 'Resturant Menu',
       theme: ThemeData.light().copyWith(primaryColor: const Color(0xFFe13133)),
       /// here can use MultiCubitProvider
-      home: CubitProvider(
-        create: (context) =>DrinksCubit() ,
-        child: CheckBoxCubitScreen(),
-      ),
+      home: StoreProvider<appState>,(
+    store: _store,
+        child:ReduxScreen(),
+    )
 
     );
   }
